@@ -1,6 +1,6 @@
 # FLUTUA UI
 
-Uma biblioteca de componentes de UI para react native.
+Uma biblioteca de componentes UI para react native.
 
 Essa biblioeteca é pensada para ser responsiva para Android, IOS e Web(Desktop e Mobile)
 
