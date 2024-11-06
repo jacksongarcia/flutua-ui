@@ -1,4 +1,7 @@
 {
   "name": "flutuante-ui",
-  "slug": "flutuante-ui"
+  "slug": "flutuante-ui",
+  "plugins": [
+    "expo-router"
+  ]
 }
