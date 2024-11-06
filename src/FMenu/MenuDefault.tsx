@@ -8,13 +8,14 @@ import {
   Keyboard,
   Platform,
   Pressable,
+  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native"
 import Animated, { useSharedValue, withTiming } from "react-native-reanimated"
-import { SafeAreaView } from "react-native-safe-area-context"
+// import { SafeAreaView } from "react-native-safe-area-context"
 
 import { useMediaQuery } from "react-responsive"
 
