@@ -1,6 +1,6 @@
 {
   "name": "flutua-ui",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "homepage": "http://killdream.github.com/Black",
   "author": "Jackson Garcia",
   "main": "dist/index.js",
