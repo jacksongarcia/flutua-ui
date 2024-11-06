@@ -1,2 +1,8 @@
 import 'react-native-reanimated';
-export { default as FInput } from './FInput';
+import FInput from './FInput';
+import { FMenu } from './FMenu';
+
+export {
+  FInput,
+  FMenu
+}
