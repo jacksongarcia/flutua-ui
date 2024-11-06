@@ -1,8 +1,26 @@
 {
-  "name": "flutuante-ui",
-  "version": "1.0.0",
+  "name": "flutua-ui",
+  "version": "1.0.5",
   "homepage": "http://killdream.github.com/Black",
-  "author": "Quildreen Motta (http://killdream.github.com/)",
-  "main": "./src/black.js",
-  "private": true
+  "author": "Jackson Garcia",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "private": false,
+  "scripts": {
+    "build": "tsc",
+    "deploy": "npm version patch && npm publish"
+  },
+  "dependencies": {
+    "@expo/vector-icons": "^14.0.4",
+    "expo": "^51.0.38",
+    "react": "^18.3.1",
+    "react-native": "^0.76.1",
+    "react-native-reanimated": "^3.16.1"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.26.0",
+    "@types/react": "^18.3.12",
+    "@types/react-native": "^0.73.0",
+    "typescript": "^5.6.3"
+  }
 }
