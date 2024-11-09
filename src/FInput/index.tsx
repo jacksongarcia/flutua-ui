@@ -14,6 +14,11 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated"
+import {
+  getWidthComponentDesktop,
+  getWidthComponentMobile,
+  isDesktop,
+} from "../helpers/screen"
 
 export default function FInput() {
   const [isFocus, setFocus] = useState(false)
@@ -27,11 +32,7 @@ export default function FInput() {
     })
     const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
       width.value = withTiming(
-        Platform.OS != "web"
-          ? Dimensions.get("window").width - (45 + 36)
-          : Dimensions.get("window").width > 767
-          ? 330
-          : Dimensions.get("window").width - (45 + 36),
+        isDesktop() ? getWidthComponentDesktop() : getWidthComponentMobile(),
         {
           duration: 200,
         }
@@ -46,11 +47,7 @@ export default function FInput() {
 
   const keyboard = useAnimatedKeyboard()
   const width = useSharedValue<number>(
-    Platform.OS != "web"
-      ? Dimensions.get("window").width - (45 + 36)
-      : Dimensions.get("window").width > 767
-      ? 330
-      : Dimensions.get("window").width - (45 + 36)
+    isDesktop() ? getWidthComponentDesktop() : getWidthComponentMobile()
   )
 
   const animatedStyles = useAnimatedStyle(() => ({

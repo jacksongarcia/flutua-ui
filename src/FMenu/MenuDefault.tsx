@@ -2,7 +2,7 @@ import useMenu, { ListPathMenuProps, MenuProvider } from "../hooks/menu"
 import "@expo/match-media"
 import { Feather } from "@expo/vector-icons"
 import { Link, usePathname, useRouter } from "expo-router"
-import { ReactNode, useCallback, useEffect, useState } from "react"
+import { ReactNode, useEffect, useState } from "react"
 import {
   Dimensions,
   Keyboard,
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
     paddingLeft: 12,
     paddingRight: 12,
     width: Platform.OS != "web" ? Dimensions.get("window").width : "100%",
-    zIndex: 999999,
+    zIndex: 2,
     justifyContent: "flex-end",
   },
   desktop: {
@@ -332,7 +332,7 @@ const styles = StyleSheet.create({
 
   listMobile: {
     position: "absolute",
-    zIndex: 99999,
+    zIndex: 2,
     right: 12,
     bottom: Platform.OS != "web" ? (Platform.OS == "android" ? 78 : 92) : 68,
     display: "flex",
