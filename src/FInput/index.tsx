@@ -17,7 +17,7 @@ import Animated, {
 
 export default function FInput() {
   const [isFocus, setFocus] = useState(false)
-  const [value, setValue] = useState()
+  const [value, setValue] = useState("")
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {

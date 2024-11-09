@@ -15,9 +15,7 @@ import {
   View,
 } from "react-native"
 import Animated, { useSharedValue, withTiming } from "react-native-reanimated"
-// import { SafeAreaView } from "react-native-safe-area-context"
-
-import { useMediaQuery } from "react-responsive"
+import { isDesktop, isMobile } from "../helpers/screen"
 
 export interface MenuDefaultProps {
   children: ReactNode
@@ -27,9 +25,8 @@ export interface MenuDefaultProps {
 export default function MenuDefault({ children, pathsMenu }: MenuDefaultProps) {
   const [isHouver, setIsHouver] = useState({ status: false, key: 0 })
   const [showMenuMobile, setShowMenuMobile] = useState(false)
-  const isMobile = useMediaQuery({ maxWidth: 767 })
 
-  const pathName = usePathname()
+  const pathName = usePathname() || "/"
   const router = useRouter()
 
   const [pathSelected, setPathSelected] = useState<ListPathMenuProps[]>([])
@@ -79,16 +76,6 @@ export default function MenuDefault({ children, pathsMenu }: MenuDefaultProps) {
 
     setPathSelected(listPath)
   }, [pathName])
-
-  const Desktop = useCallback(({ children }: { children: ReactNode }) => {
-    const isDesktop = useMediaQuery({ minWidth: 768 })
-    return isDesktop ? children : null
-  }, [])
-
-  const Mobile = useCallback(({ children }: { children: ReactNode }) => {
-    const isMobile = useMediaQuery({ maxWidth: 767 })
-    return isMobile ? children : null
-  }, [])
 
   const isActiveMenu = (item: ListPathMenuProps) =>
     `/${pathName.split("/")[1]}` == item.path
@@ -182,71 +169,72 @@ export default function MenuDefault({ children, pathsMenu }: MenuDefaultProps) {
   }
 
   return (
-    <SafeAreaView
-      style={isMobile ? styles.containerMobile : styles.containerDesktop}
-    >
-      {showMenuMobile && <ListMenuMobile />}
-      <Mobile>
-        <View style={styles.mobile}>
-          {input}
-
-          {!keyboardStatus && (
-            <TouchableOpacity
-              style={[styles.box, styles.menuMobile]}
-              onPress={() => handlePressMenuAnimated(!showMenuMobile)}
-            >
-              <Feather
-                name={showMenuMobile ? "minimize-2" : "menu"}
-                size={24}
-                color='#2C698D'
-              />
-            </TouchableOpacity>
-          )}
-        </View>
-
-        <View
-          style={{
-            display: "flex",
-            flex: 1,
-            height: "100%",
-            margin: 0,
-            gap: 12,
-          }}
-          onTouchStart={() => setShowMenuMobile(false)}
-          onPointerEnter={() => setShowMenuMobile(false)}
-        >
-          <Text style={[styles.box, styles.path]}>
-            {pathSelected[pathSelected.length - 1]?.name.toUpperCase()}
-          </Text>
-
-          {children}
-        </View>
-      </Mobile>
-
-      <Desktop>
-        <View
-          style={[styles.box, styles.desktop]}
-          onPointerLeave={() => setIsHouver({ status: false, key: -1 })}
-        >
-          <ListMenuDesktop />
-        </View>
-        <View style={{ width: "100%", height: "100%", gap: 12 }}>
-          <View style={{ display: "flex", flexDirection: "row", gap: 12 }}>
-            <Text style={[styles.box, styles.path, { width: "auto" }]}>
-              {pathSelected.map((path, key) => (
-                <Link href={path.path} key={key}>
-                  {`${path.name.toUpperCase()} ${
-                    pathSelected.length == key + 1 ? "" : " / "
-                  }`}
-                </Link>
-              ))}
-            </Text>
+    <>
+      {isMobile() && (
+        <SafeAreaView style={styles.containerMobile}>
+          {showMenuMobile && <ListMenuMobile />}
+          <View style={styles.mobile}>
             {input}
+
+            {!keyboardStatus && (
+              <TouchableOpacity
+                style={[styles.box, styles.menuMobile]}
+                onPress={() => handlePressMenuAnimated(!showMenuMobile)}
+              >
+                <Feather
+                  name={showMenuMobile ? "minimize-2" : "menu"}
+                  size={24}
+                  color='#2C698D'
+                />
+              </TouchableOpacity>
+            )}
           </View>
-          {children}
+
+          <View
+            style={{
+              display: "flex",
+              flex: 1,
+              height: "100%",
+              margin: 0,
+              gap: 12,
+            }}
+            onTouchStart={() => setShowMenuMobile(false)}
+            onPointerEnter={() => setShowMenuMobile(false)}
+          >
+            <Text style={[styles.box, styles.path]}>
+              {pathSelected[pathSelected.length - 1]?.name.toUpperCase()}
+            </Text>
+
+            {children}
+          </View>
+        </SafeAreaView>
+      )}
+      {isDesktop() && (
+        <View style={styles.containerDesktop}>
+          <View
+            style={[styles.box, styles.desktop]}
+            onPointerLeave={() => setIsHouver({ status: false, key: -1 })}
+          >
+            <ListMenuDesktop />
+          </View>
+          <View style={{ width: "100%", height: "100%", gap: 12 }}>
+            <View style={{ display: "flex", flexDirection: "row", gap: 12 }}>
+              <Text style={[styles.box, styles.path, { width: "auto" }]}>
+                {pathSelected.map((path, key) => (
+                  <Link href={path.path} key={key}>
+                    {`${path.name.toUpperCase()} ${
+                      pathSelected.length == key + 1 ? "" : " / "
+                    }`}
+                  </Link>
+                ))}
+              </Text>
+              {input}
+            </View>
+            {children}
+          </View>
         </View>
-      </Desktop>
-    </SafeAreaView>
+      )}
+    </>
   )
 }
 
