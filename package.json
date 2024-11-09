@@ -1,6 +1,6 @@
 {
   "name": "flutua-ui",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "homepage": "",
   "author": "Jackson Garcia",
   "main": "dist/index.js",
