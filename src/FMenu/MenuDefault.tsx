@@ -1,4 +1,3 @@
-import useMenu, { ListPathMenuProps, MenuProvider } from "../hooks/menu"
 import "@expo/match-media"
 import { Feather } from "@expo/vector-icons"
 import { Link, usePathname, useRouter } from "expo-router"
@@ -15,14 +14,20 @@ import {
   View,
 } from "react-native"
 import Animated, { useSharedValue, withTiming } from "react-native-reanimated"
-import { isDesktop, isMobile } from "../helpers/screen"
+import FModal from "../FModal"
+import useMenu, { ListPathMenuProps } from "../hooks/menu"
+import useModal from "../hooks/modal"
 
 export interface MenuDefaultProps {
   children: ReactNode
   pathsMenu: ListPathMenuProps[]
 }
 
+const windowDimensions = Dimensions.get("window")
+const screenDimensions = Dimensions.get("screen")
+
 export default function MenuDefault({ children, pathsMenu }: MenuDefaultProps) {
+  const { show } = useModal()
   const [isHouver, setIsHouver] = useState({ status: false, key: 0 })
   const [showMenuMobile, setShowMenuMobile] = useState(false)
 
@@ -34,6 +39,20 @@ export default function MenuDefault({ children, pathsMenu }: MenuDefaultProps) {
   const [keyboardStatus, setKeyboardStatus] = useState(false)
 
   const { input, setPathMenu } = useMenu()
+  const [dimensions, setDimensions] = useState({
+    window: windowDimensions,
+    screen: screenDimensions,
+  })
+
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener(
+      "change",
+      ({ window, screen }) => {
+        setDimensions({ window, screen })
+      }
+    )
+    return () => subscription?.remove()
+  })
 
   useEffect(() => {
     setPathMenu(pathsMenu)
@@ -170,7 +189,9 @@ export default function MenuDefault({ children, pathsMenu }: MenuDefaultProps) {
 
   return (
     <>
-      {isMobile() && (
+      {show && <FModal />}
+
+      {dimensions.window.width <= 768 && (
         <SafeAreaView style={styles.containerMobile}>
           {showMenuMobile && <ListMenuMobile />}
           <View style={styles.mobile}>
@@ -195,7 +216,12 @@ export default function MenuDefault({ children, pathsMenu }: MenuDefaultProps) {
               display: "flex",
               flex: 1,
               height: "100%",
-              margin: 0,
+              paddingTop:
+                Platform.OS == "web" ? 12 : Platform.OS == "android" ? 8 : 0,
+
+              paddingLeft: 12,
+              paddingRight: 12,
+
               gap: 12,
             }}
             onTouchStart={() => setShowMenuMobile(false)}
@@ -209,7 +235,7 @@ export default function MenuDefault({ children, pathsMenu }: MenuDefaultProps) {
           </View>
         </SafeAreaView>
       )}
-      {isDesktop() && (
+      {dimensions.window.width > 768 && (
         <View style={styles.containerDesktop}>
           <View
             style={[styles.box, styles.desktop]}
@@ -242,9 +268,6 @@ const styles = StyleSheet.create({
   containerMobile: {
     height: "100%",
     width: "100%",
-    paddingLeft: 12,
-    paddingRight: 12,
-    paddingTop: Platform.OS == "web" ? 12 : Platform.OS == "android" ? 8 : 0,
     display: "flex",
     gap: 12,
   },

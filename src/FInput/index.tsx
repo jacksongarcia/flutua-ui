@@ -17,7 +17,6 @@ import Animated, {
 import {
   getWidthComponentDesktop,
   getWidthComponentMobile,
-  isDesktop,
 } from "../helpers/screen"
 
 export default function FInput() {
@@ -32,7 +31,9 @@ export default function FInput() {
     })
     const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
       width.value = withTiming(
-        isDesktop() ? getWidthComponentDesktop() : getWidthComponentMobile(),
+        Dimensions.get("window").width > 768
+          ? getWidthComponentDesktop()
+          : getWidthComponentMobile(),
         {
           duration: 200,
         }
@@ -47,7 +48,9 @@ export default function FInput() {
 
   const keyboard = useAnimatedKeyboard()
   const width = useSharedValue<number>(
-    isDesktop() ? getWidthComponentDesktop() : getWidthComponentMobile()
+    Dimensions.get("window").width > 768
+      ? getWidthComponentDesktop()
+      : getWidthComponentMobile()
   )
 
   const animatedStyles = useAnimatedStyle(() => ({

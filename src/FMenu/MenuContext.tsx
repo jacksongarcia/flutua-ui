@@ -1,10 +1,13 @@
 import { MenuProvider } from "../hooks/menu"
+import { ModalProvider } from "../hooks/modal"
 import MenuDefault, { MenuDefaultProps } from "./MenuDefault"
 
 export default function MenuContext({ children, pathsMenu }: MenuDefaultProps) {
   return (
     <MenuProvider>
-      <MenuDefault pathsMenu={pathsMenu}>{children}</MenuDefault>
+      <ModalProvider>
+        <MenuDefault pathsMenu={pathsMenu}>{children}</MenuDefault>
+      </ModalProvider>
     </MenuProvider>
   )
 }
