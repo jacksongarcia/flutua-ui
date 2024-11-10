@@ -1,82 +1,91 @@
 import { Feather } from "@expo/vector-icons"
 import { useEffect, useState } from "react"
 import {
-  Dimensions,
   Keyboard,
-  Platform,
   StyleSheet,
   TextInput,
+  TouchableOpacity,
   View,
 } from "react-native"
-import Animated, {
-  useAnimatedKeyboard,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated"
-import {
-  getWidthComponentDesktop,
-  getWidthComponentMobile,
-} from "../helpers/screen"
+import Animated, { useSharedValue, withTiming } from "react-native-reanimated"
+import useScreen from "../hooks/screen"
+import { WIDTH_COMPONENT_WEB } from "../constants/screen"
+// import useScreen from "@/hooks/screen"
+// import { WIDTH_COMPONENT_WEB } from "@/constants/screen"
 
-export default function FInput() {
+interface FInputProps {
+  icon?: "search" | "user" | "lock"
+  password?: boolean
+  placeholder?: string
+  type?: "default" | "email-address" | "phone-pad" | "numeric"
+  value?: string
+  onChange?: ((text: string) => void) | undefined
+}
+
+export default function FInput({
+  icon,
+  password = false,
+  placeholder,
+  type = "default",
+  value = "",
+  onChange,
+}: FInputProps) {
   const [isFocus, setFocus] = useState(false)
-  const [value, setValue] = useState("")
+  const { dimensions, isDesktop } = useScreen()
+  const width = useSharedValue<number>(0)
+  const [body, setBody] = useState(false)
+  const [visiblePassword, setVisiblePassword] = useState(password)
 
   useEffect(() => {
-    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
-      width.value = withTiming(Dimensions.get("window").width - 26, {
-        duration: 200,
-      })
-    })
-    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
-      width.value = withTiming(
-        Dimensions.get("window").width > 768
-          ? getWidthComponentDesktop()
-          : getWidthComponentMobile(),
-        {
-          duration: 200,
-        }
-      )
-    })
+    width.value = withTiming(
+      isDesktop() ? WIDTH_COMPONENT_WEB : dimensions.window.width - (45 + 36)
+    )
 
-    return () => {
-      showSubscription.remove()
-      hideSubscription.remove()
-    }
+    const timeoutId = setTimeout(() => {
+      setBody(true)
+    }, 300)
+
+    return () => clearTimeout(timeoutId)
   }, [])
-
-  const keyboard = useAnimatedKeyboard()
-  const width = useSharedValue<number>(
-    Dimensions.get("window").width > 768
-      ? getWidthComponentDesktop()
-      : getWidthComponentMobile()
-  )
-
-  const animatedStyles = useAnimatedStyle(() => ({
-    transform: [{ translateY: -keyboard.height.value }],
-  }))
 
   return (
     <Animated.View
       style={[
         {
           width,
+          display: "flex",
+          justifyContent: "center",
         },
-        animatedStyles,
       ]}
     >
-      <View style={styles.icon}>
-        <Feather
-          name='search'
-          size={21}
-          color={isFocus || value.length > 0 ? "#00436a" : "#E8EDF2"}
-        />
-      </View>
+      {body && icon && (
+        <View style={styles.icon}>
+          <Feather
+            name={icon}
+            size={21}
+            color={isFocus || value.length > 0 ? "#00436a" : "#E8EDF2"}
+          />
+        </View>
+      )}
+      {body && password && (
+        <TouchableOpacity
+          style={[styles.icon, { right: 12 }]}
+          activeOpacity={0.5}
+          onPress={() => value != "" && setVisiblePassword(!visiblePassword)}
+        >
+          <Feather
+            name={!visiblePassword ? "eye" : "eye-off"}
+            size={21}
+            color={isFocus || value.length > 0 ? "#00436a" : "#E8EDF2"}
+          />
+        </TouchableOpacity>
+      )}
       <TextInput
         style={[
           styles.input,
           {
+            paddingLeft: icon ? 41 : 14,
+
             borderColor: isFocus || value.length > 0 ? "#00436a" : "#E8EDF2",
           },
         ]}
@@ -84,8 +93,12 @@ export default function FInput() {
         onBlur={() => setFocus(false)}
         onSubmitEditing={Keyboard.dismiss}
         returnKeyType='done'
-        onChangeText={setValue}
+        onChangeText={onChange}
         value={value}
+        placeholder={placeholder}
+        placeholderTextColor='#A3A2BB'
+        secureTextEntry={visiblePassword}
+        keyboardType={type}
       />
     </Animated.View>
   )
@@ -104,7 +117,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontStyle: "normal",
     alignContent: "center",
-    paddingLeft: 41,
     paddingRight: 13,
   },
   icon: {

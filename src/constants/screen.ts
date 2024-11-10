@@ -1,0 +1,2 @@
+export const WIDTH_SCREEN_MOBILE = 768
+export const WIDTH_COMPONENT_WEB = 330

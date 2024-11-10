@@ -1,11 +1,15 @@
+// import { WIDTH_COMPONENT_WEB } from "@/constants/screen"
+// import useScreen from "@/hooks/screen"
 import { useEffect, useState } from "react"
 import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  Dimensions,
   GestureResponderEvent,
 } from "react-native"
+import Animated, { useSharedValue, withTiming } from "react-native-reanimated"
+import useScreen from "../hooks/screen"
+import { WIDTH_COMPONENT_WEB } from "../constants/screen"
 
 interface FButtonProps {
   text: string
@@ -13,8 +17,6 @@ interface FButtonProps {
   size?: "small" | "big"
   onPress?: ((event: GestureResponderEvent) => void) | undefined
 }
-const windowDimensions = Dimensions.get("window")
-const screenDimensions = Dimensions.get("screen")
 
 export default function FButton({
   text,
@@ -22,52 +24,66 @@ export default function FButton({
   size = "big",
   onPress,
 }: FButtonProps) {
-  const [dimensions, setDimensions] = useState({
-    window: windowDimensions,
-    screen: screenDimensions,
+  const { dimensions, isDesktop } = useScreen()
+
+  const width = useSharedValue(0)
+
+  const [body, setBody] = useState(false)
+
+  useEffect(() => {
+    if (body) {
+      width.value = withTiming(
+        isDesktop() ? WIDTH_COMPONENT_WEB : dimensions.window.width - (45 + 36)
+      )
+    }
   })
 
   useEffect(() => {
-    const subscription = Dimensions.addEventListener(
-      "change",
-      ({ window, screen }) => {
-        setDimensions({ window, screen })
-      }
+    width.value = withTiming(
+      isDesktop() ? WIDTH_COMPONENT_WEB : dimensions.window.width - (45 + 36)
     )
-    return () => subscription?.remove()
-  })
+    const timeoutId = setTimeout(() => {
+      setBody(true)
+    }, 300)
+
+    return () => clearTimeout(timeoutId)
+  }, [])
 
   return (
-    <TouchableOpacity
+    <Animated.View
       style={[
         styles.button,
         disabled && styles.disabled,
         size == "small" && styles.small,
         {
-          width:
-            dimensions.window.width > 768
-              ? 330
-              : dimensions.window.width - (45 + 36),
+          width: width,
+          height: 45,
         },
       ]}
-      activeOpacity={0.5}
-      disabled={disabled}
-      onPress={onPress}
     >
-      <Text style={styles.text}>{text}</Text>
-    </TouchableOpacity>
+      {body && (
+        <TouchableOpacity
+          activeOpacity={0.5}
+          disabled={disabled}
+          onPress={onPress}
+          style={[styles.button, { width: "100%", height: "100%" }]}
+        >
+          <Text style={styles.text}>{text}</Text>
+        </TouchableOpacity>
+      )}
+    </Animated.View>
   )
 }
 
 const styles = StyleSheet.create({
   button: {
-    height: 45,
     borderRadius: 25,
     backgroundColor: "#17B6E0",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     elevation: 0.3,
+    cursor: "pointer",
   },
   text: {
     color: "#fff",

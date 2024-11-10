@@ -1,48 +1,42 @@
 import { useEffect, useState } from "react"
-import { Dimensions, StyleSheet, Text, View } from "react-native"
+import { Dimensions, Platform, StyleSheet, Text, View } from "react-native"
 import FButton from "../FButton"
 import Animated, { useSharedValue, withTiming } from "react-native-reanimated"
 import useModal from "../hooks/modal"
+import useScreen from "../hooks/screen"
+import { WIDTH_COMPONENT_WEB } from "../constants/screen"
 
-const windowDimensions = Dimensions.get("window")
-const screenDimensions = Dimensions.get("screen")
+// import useModal from "@/hooks/modal"
+// import useScreen from "@/hooks/screen"
+// import { WIDTH_COMPONENT_WEB } from "@/constants/screen"
 
 export default function FModal() {
   const { component, showModal } = useModal()
-  const [dimensions, setDimensions] = useState({
-    window: windowDimensions,
-    screen: screenDimensions,
-  })
+  const { dimensions, isDesktop } = useScreen()
 
-  const width = useSharedValue(100)
-  const height = useSharedValue(100)
+  const width = useSharedValue(0)
+  const height = useSharedValue(0)
 
   const [body, setBody] = useState(false)
 
   useEffect(() => {
     if (body) {
       width.value = withTiming(
-        dimensions.window.width > 768
-          ? 630
+        isDesktop()
+          ? WIDTH_COMPONENT_WEB + 200
           : dimensions.window.width - (45 + 36)
       )
-      height.value = withTiming(dimensions.window.width > 768 ? 480 : 284)
+      height.value = withTiming(isDesktop() ? 480 : 284)
     }
-
-    const subscription = Dimensions.addEventListener(
-      "change",
-      ({ window, screen }) => {
-        setDimensions({ window, screen })
-      }
-    )
-    return () => subscription?.remove()
   })
 
   useEffect(() => {
     width.value = withTiming(
-      dimensions.window.width > 768 ? 630 : dimensions.window.width - (45 + 36)
+      isDesktop()
+        ? WIDTH_COMPONENT_WEB + 200
+        : dimensions.window.width - (45 + 36)
     )
-    height.value = withTiming(dimensions.window.width > 768 ? 480 : 284)
+    height.value = withTiming(isDesktop() ? 480 : 284)
     const timeoutId = setTimeout(() => {
       setBody(true)
     }, 300)
@@ -52,8 +46,8 @@ export default function FModal() {
 
   const closeModal = () => {
     setBody(false)
-    width.value = withTiming(100)
-    height.value = withTiming(100)
+    width.value = withTiming(0)
+    height.value = withTiming(0)
     const timeoutId = setTimeout(() => {
       showModal(false)
     }, 300)
@@ -68,7 +62,7 @@ export default function FModal() {
         {
           width: dimensions.window.width,
           height: dimensions.window.height,
-          justifyContent: dimensions.window.width > 768 ? "center" : "flex-end",
+          justifyContent: isDesktop() ? "center" : "flex-end",
         },
       ]}
     >
@@ -83,7 +77,7 @@ export default function FModal() {
       >
         {body && component}
       </Animated.View>
-      <FButton text='CONFIRMAR' onPress={() => closeModal()} />
+      {body && <FButton text='CONFIRMAR' onPress={() => closeModal()} />}
     </View>
   )
 }
