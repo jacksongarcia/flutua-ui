@@ -8,6 +8,7 @@ import {
   Keyboard,
   Platform,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -15,6 +16,7 @@ import {
 } from "react-native"
 import Animated, { useSharedValue, withTiming } from "react-native-reanimated"
 import FImage from "../FImage"
+import { ImageSource } from "expo-image"
 import useMenu, { ListPathMenuProps } from "../hooks/menu"
 import useScreen from "../hooks/screen"
 
@@ -23,11 +25,22 @@ export default function MenuMobile({
   pathName,
   pathsMenu,
   pathSelected,
+  sourceImage,
+  title,
 }: {
   children: ReactNode
   pathName: string
   pathSelected: ListPathMenuProps[]
   pathsMenu: ListPathMenuProps[]
+  sourceImage?:
+    | string
+    | number
+    | string[]
+    | ImageSource
+    | ImageSource[]
+    | null
+    | undefined
+  title?: string
 }) {
   const width = useSharedValue(0)
   const height = useSharedValue(0)
@@ -69,58 +82,70 @@ export default function MenuMobile({
 
   const ListMenuMobile = () => {
     return (
-      <Animated.View
+      <View
         style={[
-          {
-            width,
-            minHeight: height,
-          },
-          styles.box,
           styles.listMobile,
+          {
+            display: "flex",
+            width: 220,
+            minHeight: 110,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rede",
+          },
         ]}
       >
-        {body && (
-          <View style={styles.headerMenu}>
-            <FImage
-              source={"https://picsum.photos/seed/696/3000/2000"}
-              size={50}
-            />
-            <Text style={styles.subtitle}>
-              {`${String("Sistema de Gruas/VM").substring(0, 16)} ${
-                String("Sistema de Gruas/VM").length > 16 ? "..." : ""
-              }`}
-            </Text>
-          </View>
-        )}
-        {body &&
-          pathsMenu.map(
-            (itemMenu: ListPathMenuProps, key: number) =>
-              !itemMenu.notVisible && (
-                <TouchableOpacity
-                  key={key}
-                  style={[
-                    styles.itemMobile,
-                    isActiveMenu(itemMenu) ? styles.itemActive : undefined,
-                  ]}
-                  onPress={() => {
-                    setShowMenuMobile(false)
-
-                    router.push(itemMenu.path)
-                  }}
-                  disabled={pathName == itemMenu.path ? true : false}
-                >
-                  <Text
+        <Animated.View
+          style={[
+            {
+              width,
+              minHeight: height,
+            },
+            styles.box,
+          ]}
+        >
+          {(sourceImage || title) && body && (
+            <View style={styles.headerMenu}>
+              {sourceImage && <FImage source={sourceImage} size={35} />}
+              {title && (
+                <Text style={styles.subtitle}>
+                  {`${title.substring(0, 21)} ${
+                    title.length > 21 ? "..." : ""
+                  }`}
+                </Text>
+              )}
+            </View>
+          )}
+          {body &&
+            pathsMenu.map(
+              (itemMenu: ListPathMenuProps, key: number) =>
+                !itemMenu.notVisible && (
+                  <TouchableOpacity
+                    key={key}
                     style={[
-                      styles.itemTextMobile,
+                      styles.itemMobile,
                       isActiveMenu(itemMenu) ? styles.itemActive : undefined,
                     ]}
+                    onPress={() => {
+                      setShowMenuMobile(false)
+
+                      router.push(itemMenu.path)
+                    }}
+                    disabled={pathName == itemMenu.path ? true : false}
                   >
-                    {itemMenu.name}
-                  </Text>
-                </TouchableOpacity>
-              )
-          )}
-      </Animated.View>
+                    <Text
+                      style={[
+                        styles.itemTextMobile,
+                        isActiveMenu(itemMenu) ? styles.itemActive : undefined,
+                      ]}
+                    >
+                      {itemMenu.name}
+                    </Text>
+                  </TouchableOpacity>
+                )
+            )}
+        </Animated.View>
+      </View>
     )
   }
 
@@ -192,8 +217,6 @@ export default function MenuMobile({
 
           paddingLeft: 12,
           paddingRight: 12,
-
-          gap: 12,
         }}
         onTouchStart={() => setShowMenuMobile(false)}
         onPointerEnter={() => setShowMenuMobile(false)}
@@ -201,7 +224,6 @@ export default function MenuMobile({
         <Text style={[styles.box, styles.path]}>
           {pathSelected[pathSelected.length - 1]?.name.toUpperCase()}
         </Text>
-
         {children}
       </View>
     </SafeAreaView>
@@ -210,10 +232,9 @@ export default function MenuMobile({
 
 const styles = StyleSheet.create({
   containerMobile: {
-    height: "100%",
-    width: "100%",
-    display: "flex",
-    gap: 12,
+    flex: 1,
+    // display: "flex",
+    // gap: 12,
     paddingTop: Platform.OS == "android" ? 41 : 0,
   },
   box: {
@@ -231,7 +252,6 @@ const styles = StyleSheet.create({
     right: 12,
     bottom: Platform.OS != "web" ? (Platform.OS == "android" ? 78 : 92) : 68,
     display: "flex",
-    width: 220,
     alignItems: "center",
   },
   itemMobile: {

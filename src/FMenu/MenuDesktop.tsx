@@ -5,6 +5,7 @@ import { ReactNode, useEffect, useState } from "react"
 import { Platform, Pressable, StyleSheet, Text, View } from "react-native"
 import Animated, { useAnimatedStyle, withTiming } from "react-native-reanimated"
 import FImage from "../FImage"
+import { ImageSource } from "expo-image"
 import useMenu, { ListPathMenuProps } from "../hooks/menu"
 import useScreen from "../hooks/screen"
 
@@ -13,12 +14,22 @@ export default function MenuDestop({
   pathsMenu,
   pathName,
   pathSelected,
+  sourceImage,
+  title,
 }: {
   children: ReactNode
   pathName: string
   pathSelected: ListPathMenuProps[]
-
   pathsMenu: ListPathMenuProps[]
+  sourceImage?:
+    | string
+    | number
+    | string[]
+    | ImageSource
+    | ImageSource[]
+    | null
+    | undefined
+  title?: string
 }) {
   const { dimensions, isDesktop } = useScreen()
   const [isHouver, setIsHouver] = useState({ status: false, key: 0 })
@@ -80,14 +91,16 @@ export default function MenuDestop({
         style={[styles.box, styles.desktop, animatedStyles]}
         onPointerLeave={() => setIsHouver({ status: false, key: -1 })}
       >
-        <View style={styles.headerMenu}>
-          <FImage source={"https://picsum.photos/seed/696/3000/2000"} />
-          <Text style={styles.subtitle}>Sistema de Gruas/VM</Text>
-        </View>
+        {(sourceImage || title) && (
+          <View style={styles.headerMenu}>
+            {sourceImage && <FImage source={sourceImage} />}
+            {title && <Text style={styles.subtitle}>{title}</Text>}
+          </View>
+        )}
         <ListMenuDesktop />
       </Animated.View>
 
-      <View style={{ width: "100%", height: "100%", gap: 12 }}>
+      <View style={{ width: "100%", height: "100%" }}>
         <View style={{ display: "flex", flexDirection: "row", gap: 12 }}>
           <Text style={[styles.box, styles.path, { width: "auto" }]}>
             {pathSelected.map((path, key) => (

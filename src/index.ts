@@ -1,3 +1,4 @@
+import { FCard } from './FCard/index';
 import 'react-native-reanimated';
 import FInput from './FInput';
 import { FMenu } from './FMenu';
@@ -15,6 +16,7 @@ export {
   FButton,
   FModal,
   FImage,
+  FCard,
 
   useModal,
   useMenu,

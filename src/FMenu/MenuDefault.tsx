@@ -10,12 +10,27 @@ import useModal from "../hooks/modal"
 // import useModal from "@/hooks/modal"
 // import useScreen from "@/hooks/screen"
 // import useMenu, { ListPathMenuProps } from "@/hooks/menu"
+import { ImageSource } from "expo-image"
 export interface MenuDefaultProps {
   children: ReactNode
   pathsMenu: ListPathMenuProps[]
+  sourceImage?:
+    | string
+    | number
+    | string[]
+    | ImageSource
+    | ImageSource[]
+    | null
+    | undefined
+  title?: string
 }
 
-export default function MenuDefault({ children, pathsMenu }: MenuDefaultProps) {
+export default function MenuDefault({
+  children,
+  pathsMenu,
+  sourceImage,
+  title,
+}: MenuDefaultProps) {
   const { isDesktop } = useScreen()
   const { show } = useModal()
   const pathName = usePathname() || "/"
@@ -53,13 +68,15 @@ export default function MenuDefault({ children, pathsMenu }: MenuDefaultProps) {
 
   return (
     <>
-      {show && <FModal />}
+      {show && <FModal textButton='HA HA' />}
 
       {!isDesktop() && (
         <MenuMobile
           pathsMenu={pathsMenu}
           pathName={pathName}
           pathSelected={pathSelected}
+          sourceImage={sourceImage}
+          title={title}
         >
           {children}
         </MenuMobile>
@@ -70,6 +87,8 @@ export default function MenuDefault({ children, pathsMenu }: MenuDefaultProps) {
           pathsMenu={pathsMenu}
           pathName={pathName}
           pathSelected={pathSelected}
+          sourceImage={sourceImage}
+          title={title}
         >
           {children}
         </MenuDestop>
