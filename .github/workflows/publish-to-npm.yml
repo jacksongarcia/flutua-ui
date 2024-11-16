@@ -1,0 +1,42 @@
+name: Publish to npm
+
+on:
+  push:
+    tags:
+      - "v*" # Executa o workflow quando uma tag que começa com "v" é enviada.
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout do código
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Configurar Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      # Instalar dependências
+      - name: Install dependencies
+        run: npm install
+
+      # Publicar no npm
+      - name: Publish to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Configurar o token do npm no repositório
+        run: npm publish
+
+      # Notificar sobre o sucesso da publicação
+      - name: Notify success
+        if: success()
+        run: echo "📦 Successfully published to npm!"
+
+      # Lidar com falhas de publicação
+      - name: Notify failure
+        if: failure()
+        run: echo "❌ Failed to publish to npm!"
