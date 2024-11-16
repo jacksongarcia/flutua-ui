@@ -18,7 +18,6 @@ interface FInputProps {
   password?: boolean
   placeholder?: string
   type?: "default" | "email-address" | "phone-pad" | "numeric"
-  value?: string
   onChange?: ((text: string) => void) | undefined
 }
 
@@ -27,7 +26,6 @@ export default function FInput({
   password = false,
   placeholder,
   type = "default",
-  value = "",
   onChange,
 }: FInputProps) {
   const [isFocus, setFocus] = useState(false)
@@ -48,6 +46,13 @@ export default function FInput({
     return () => clearTimeout(timeoutId)
   }, [])
 
+  const [textInput, setTextInput] = useState("")
+
+  const onChangeText = (value: string) => {
+    setTextInput(value)
+    onChange && onChange(value)
+  }
+
   return (
     <Animated.View
       style={[
@@ -63,7 +68,7 @@ export default function FInput({
           <Feather
             name={icon}
             size={21}
-            color={isFocus || value.length > 0 ? "#00436a" : "#E8EDF2"}
+            color={isFocus || textInput.length > 0 ? "#00436a" : "#E8EDF2"}
           />
         </View>
       )}
@@ -71,12 +76,14 @@ export default function FInput({
         <TouchableOpacity
           style={[styles.icon, { right: 12 }]}
           activeOpacity={0.5}
-          onPress={() => value != "" && setVisiblePassword(!visiblePassword)}
+          onPress={() =>
+            textInput != "" && setVisiblePassword(!visiblePassword)
+          }
         >
           <Feather
             name={!visiblePassword ? "eye" : "eye-off"}
             size={21}
-            color={isFocus || value.length > 0 ? "#00436a" : "#E8EDF2"}
+            color={isFocus || textInput.length > 0 ? "#00436a" : "#E8EDF2"}
           />
         </TouchableOpacity>
       )}
@@ -86,15 +93,16 @@ export default function FInput({
           {
             paddingLeft: icon ? 41 : 14,
 
-            borderColor: isFocus || value.length > 0 ? "#00436a" : "#E8EDF2",
+            borderColor:
+              isFocus || textInput.length > 0 ? "#00436a" : "#E8EDF2",
           },
         ]}
         onFocus={() => setFocus(true)}
         onBlur={() => setFocus(false)}
         onSubmitEditing={Keyboard.dismiss}
         returnKeyType='done'
-        onChangeText={onChange}
-        value={value}
+        onChangeText={onChangeText}
+        value={textInput}
         placeholder={placeholder}
         placeholderTextColor='#A3A2BB'
         secureTextEntry={visiblePassword}

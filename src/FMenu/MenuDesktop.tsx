@@ -8,6 +8,7 @@ import FImage from "../FImage"
 import { ImageSource } from "expo-image"
 import useMenu, { ListPathMenuProps } from "../hooks/menu"
 import useScreen from "../hooks/screen"
+import { WIDTH_COMPONENT_WEB } from "../constants/screen"
 
 export default function MenuDestop({
   children,
@@ -114,7 +115,9 @@ export default function MenuDestop({
 
           <View
             style={{
-              width: isDesktop() ? 330 : dimensions.window.width - (45 + 36),
+              width: isDesktop()
+                ? WIDTH_COMPONENT_WEB
+                : dimensions.window.width - (45 + 36),
               display: "flex",
               justifyContent: "center",
               alignItems: "center",

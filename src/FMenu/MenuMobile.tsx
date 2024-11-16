@@ -212,8 +212,7 @@ export default function MenuMobile({
           display: "flex",
           flex: 1,
           height: "100%",
-          paddingTop:
-            Platform.OS == "web" ? 12 : Platform.OS == "android" ? 8 : 0,
+          paddingTop: Platform.OS == "web" ? 12 : 0,
 
           paddingLeft: 12,
           paddingRight: 12,
@@ -233,9 +232,7 @@ export default function MenuMobile({
 const styles = StyleSheet.create({
   containerMobile: {
     flex: 1,
-    // display: "flex",
-    // gap: 12,
-    paddingTop: Platform.OS == "android" ? 41 : 0,
+    paddingTop: Platform.OS == "android" ? 12 : 0,
   },
   box: {
     borderRadius: 10,
