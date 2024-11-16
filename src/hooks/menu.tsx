@@ -9,7 +9,7 @@ import {
 
 export interface ListPathMenuProps {
   name: string
-  path: Href<string | object>
+  path: Href
   notVisible?: boolean
   component?: ReactNode | null
 }
@@ -17,7 +17,7 @@ export interface ListPathMenuProps {
 interface MenuContextProps {
   input: ReactNode | null
   setInput: Function
-  path: Href<string | object>
+  path: Href
   setPath: Function
   pathsMenu: ListPathMenuProps[]
   setPathMenu: Function
@@ -26,7 +26,7 @@ const MenuContext = createContext<MenuContextProps>({} as MenuContextProps)
 
 export function MenuProvider({ children }: { children: ReactNode }) {
   const [input, setInput] = useState<ReactNode | null>(null)
-  const [path, setPath] = useState<Href<string | object>>("/")
+  const [path, setPath] = useState<Href>("/")
   const [pathsMenu, setPathMenu] = useState<ListPathMenuProps[]>([])
 
   return (
@@ -35,7 +35,7 @@ export function MenuProvider({ children }: { children: ReactNode }) {
         input,
         setInput: (input: ReactNode | null) => setInput(input),
         path,
-        setPath: (path: Href<string | object>) => setPath(path),
+        setPath: (path: Href) => setPath(path),
         pathsMenu,
         setPathMenu: (listPathMenu: ListPathMenuProps[]) =>
           setPathMenu(listPathMenu),
