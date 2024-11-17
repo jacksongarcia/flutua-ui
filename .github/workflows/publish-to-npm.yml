@@ -2,8 +2,9 @@ name: Publish to npm
 
 on:
   push:
-    tags:
-      - "v*" # Executa o workflow quando uma tag que começa com "v" é enviada.
+    branches: [main]
+    paths:
+      - "package.json"
 
 jobs:
   publish:
