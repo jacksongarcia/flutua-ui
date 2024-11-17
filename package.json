@@ -1,10 +1,19 @@
 {
   "name": "flutua-ui",
   "version": "1.0.30",
-  "homepage": "",
   "author": "Jackson Garcia",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "description": "Biblioteca de componentes de UI para react native, como suporte para Android, IOS e WEB de forma responsiva",
+  "license": "ISC",
+  "homepage": "https://github.com/jacksongarcia/flutua-ui#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jacksongarcia/flutua-ui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jacksongarcia/flutua-ui/issues"
+  },
   "private": false,
   "scripts": {
     "build": "tsc",
