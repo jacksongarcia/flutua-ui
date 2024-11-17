@@ -2,9 +2,9 @@ name: Publish to npm
 
 on:
   push:
-    branches: [main]
-    paths:
-      - "package.json"
+    branches: [master]
+  pull_request:
+    branches: [master]
 
 jobs:
   publish:
@@ -24,12 +24,18 @@ jobs:
 
       # Instalar dependências
       - name: Install dependencies
-        run: npm install
+        run: npm install --force
 
-      # Publicar no npm
+       // autenticar npm antes de publicar
+      - name: Authenticate to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
+
+        // publicar pacote npm
       - name: Publish to npm
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Configurar o token do npm no repositório
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish --access public
 
       # Notificar sobre o sucesso da publicação
