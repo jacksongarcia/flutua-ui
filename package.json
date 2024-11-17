@@ -4,8 +4,8 @@
   "author": "Jackson Garcia",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "description": "Biblioteca de componentes de UI para react native, como suporte para Android, IOS e WEB de forma responsiva",
-  "license": "ISC",
+  "description": "Biblioeteca de componentes de UI para ser responsiva em Android, IOS e Web(Desktop e Mobile)",
+  "license": "MIT",
   "homepage": "https://github.com/jacksongarcia/flutua-ui#readme",
   "repository": {
     "type": "git",
