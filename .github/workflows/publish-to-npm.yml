@@ -26,13 +26,13 @@ jobs:
       - name: Install dependencies
         run: npm install --force
 
-       // autenticar npm antes de publicar
+        # autenticar npm antes de publicar
       - name: Authenticate to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
 
-        // publicar pacote npm
+      # publicar pacote npm
       - name: Publish to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
