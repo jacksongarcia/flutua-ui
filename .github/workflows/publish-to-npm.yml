@@ -33,6 +33,10 @@ jobs:
         run: echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
 
       # publicar pacote npm
+      - name: Build
+        run: npm run build
+
+      # publicar pacote npm
       - name: Publish to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
