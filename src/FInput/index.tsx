@@ -19,6 +19,7 @@ interface FInputProps {
   placeholder?: string
   type?: "default" | "email-address" | "phone-pad" | "numeric"
   onChange?: ((text: string) => void) | undefined
+  accessibilityLabel?: string
 }
 
 export default function FInput({
@@ -27,6 +28,7 @@ export default function FInput({
   placeholder,
   type = "default",
   onChange,
+  accessibilityLabel = "",
 }: FInputProps) {
   const [isFocus, setFocus] = useState(false)
   const { dimensions, isDesktop } = useScreen()
@@ -107,6 +109,8 @@ export default function FInput({
         placeholderTextColor='#A3A2BB'
         secureTextEntry={visiblePassword}
         keyboardType={type}
+        accessible={true}
+        accessibilityLabel={accessibilityLabel}
       />
     </Animated.View>
   )
